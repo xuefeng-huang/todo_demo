@@ -1,0 +1,15 @@
+{
+  "name": "todo_app",
+  "version": "1.0.0",
+  "description": "todo demo app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "xuefeng huang",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "pg": "^7.4.3"
+  }
+}
