@@ -8,7 +8,6 @@ const pool = new pg.Pool({
 
 
 router.get('/api/v1/todos', (req, res, next) => {
-    const results = [];
     // Get a Postgres client from the pool
     pool.connect((err, client, done) => {
         if (err) {
@@ -18,13 +17,15 @@ router.get('/api/v1/todos', (req, res, next) => {
         }
         client.query('SELECT * FROM items ORDER BY id ASC;', (err, result) => {
             done();
+            if (err) {
+                return console.error('get records failed', err)
+            }
             res.status(200).send(result.rows);
         });
     });
 });
 
 router.post('/api/v1/todos', (req, res, next) => {
-    const results = [];
     const data = { text: req.body.text, complete: false };
 
     pool.connect((err, client, done) => {
@@ -36,13 +37,15 @@ router.post('/api/v1/todos', (req, res, next) => {
         client.query('INSERT INTO items(text, complete) values($1, $2)',
             [data.text, data.complete], (err, result) => {
                 done();
+                if (err) {
+                    return console.error('post record failed', err)
+                }
                 res.status(201).send('create successfully');
             });
     });
 });
 
 router.put('/api/v1/todos/:todo_id', (req, res, next) => {
-    const results = [];
     const id = req.params.todo_id;
     const data = { text: req.body.text, complete: req.body.complete };
 
@@ -55,13 +58,15 @@ router.put('/api/v1/todos/:todo_id', (req, res, next) => {
         client.query('UPDATE items SET text=($1), complete=($2) WHERE id=($3)',
             [data.text, data.complete, id], (err, result) => {
                 done();
+                if (err) {
+                    return console.error('update record failed', err)
+                }
                 res.status(200).send('update successfully');
             });
     });
 });
 
 router.delete('/api/v1/todos/:todo_id', (req, res, next) => {
-    const results = [];
     const id = req.params.todo_id;
 
     pool.connect((err, client, done) => {
@@ -72,6 +77,9 @@ router.delete('/api/v1/todos/:todo_id', (req, res, next) => {
         }
         client.query('DELETE FROM items WHERE id=($1)', [id], (err, result) => {
             done();
+            if (err) {
+                return console.error('delete record failed', err)
+            }
             res.status(200).send('delete successfully');
         });
     });
